@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 @RestController
@@ -22,45 +21,101 @@ public class RegistryOfficeController {
     @Autowired
     private RegistryOfficeRepository registryOfficeRepository;
 
-    @PostMapping(path = "store")
-    @ExceptionHandler(ApiCustomException.class)
-    @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
-    public RegistryOffice store(@RequestBody RegistryOffice registryOffice) throws ApiCustomException {
-
-        RegistryOfficeService.validateRegistryOffice(registryOffice);
-
-        return registryOfficeRepository.save(registryOffice);
-    }
-
     @GetMapping(path = "index")
     public List<RegistryOffice> index() {
         return registryOfficeRepository.findAll();
     }
 
     @GetMapping(path = "show/{registryOfficeId}")
-    public Optional<RegistryOffice> show(
-            @PathVariable Long registryOfficeId,
-            HttpServletResponse response
-    ) throws ApiCustomException {
+    public ResponseEntity<Object> show(@PathVariable Long registryOfficeId) {
 
-        RegistryOffice registryOffice = registryOfficeRepository.findById(registryOfficeId).orElse(null);
+        Optional<RegistryOffice> registryOffice = registryOfficeRepository.findById(registryOfficeId);
 
-        if (registryOffice == null) {
-            response.setStatus(204);
+        if (!registryOffice.isPresent()) {
+            return ResponseEntity
+                    .status(HttpStatus.NO_CONTENT)
+                    .body("Cartório não encontrado");
         }
 
-        return registryOfficeRepository.findById(registryOfficeId);
+        return ResponseEntity.status(HttpStatus.OK).body(registryOfficeRepository.findById(registryOfficeId));
+    }
+
+    @PostMapping(path = "store")
+    @ExceptionHandler(ApiCustomException.class)
+    @ResponseBody
+    public ResponseEntity<Object> store(@RequestBody RegistryOffice registryOffice) {
+
+        RegistryOfficeService registryOfficeService = new RegistryOfficeService(registryOfficeRepository);
+
+        String validationMessage = registryOfficeService.validateRegistryOffice(registryOffice);
+        if (!validationMessage.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_ACCEPTABLE)
+                    .body(validationMessage);
+        }
+
+        String validationNameExists = registryOfficeService.checkIfRegistryOfficeNameAlreadyExists(registryOffice);
+        if (!validationNameExists.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_ACCEPTABLE)
+                    .body(validationNameExists);
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(registryOfficeService.save(registryOffice));
     }
 
     @PutMapping(path = "update/{registryOfficeId}")
-    public String update(@PathVariable Integer registryOfficeId) {
-        return "Editando cartório " + registryOfficeId;
+    public ResponseEntity<Object> update(
+            @PathVariable Long registryOfficeId,
+            @RequestBody RegistryOffice registryOffice
+    ) {
+
+        RegistryOfficeService registryOfficeService = new RegistryOfficeService(registryOfficeRepository);
+
+        String validationMessage = registryOfficeService.validateRegistryOffice(registryOffice);
+        if (!validationMessage.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_ACCEPTABLE)
+                    .body(validationMessage);
+        }
+
+        String validationExistsMessage = registryOfficeService.checkIfRegistryOfficeExistsById(registryOfficeId);
+        if (!validationExistsMessage.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(validationExistsMessage);
+        }
+
+        Optional<RegistryOffice> updateRegistryOffice = registryOfficeRepository.findById(registryOfficeId);
+
+        if (!updateRegistryOffice.isPresent()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Cartório ID não encontrado");
+        }
+
+        RegistryOffice registryOfficeData = updateRegistryOffice.get();
+
+        registryOfficeData.setName(registryOffice.getName());
+        registryOfficeData.setAddress(registryOffice.getAddress());
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(registryOfficeService.save(registryOfficeData));
     }
 
     @DeleteMapping(path = "delete/{registryOfficeId}")
-    public String delete(@PathVariable Integer registryOfficeId) {
-        return "Deletando cartório " + registryOfficeId;
+    public ResponseEntity<Object> delete(@PathVariable Long registryOfficeId) {
+        RegistryOfficeService registryOfficeService = new RegistryOfficeService(registryOfficeRepository);
+
+        String validationExistsMessage = registryOfficeService.checkIfRegistryOfficeExistsById(registryOfficeId);
+        if (!validationExistsMessage.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(validationExistsMessage);
+        }
+
+        registryOfficeRepository.deleteById(registryOfficeId);
+        return ResponseEntity.status(HttpStatus.OK).body("Cartório " + registryOfficeId + " deletado com sucesso!");
     }
 
     @GetMapping(path = "certificates-raw")
