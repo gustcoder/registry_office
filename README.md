@@ -13,3 +13,5 @@ Neste teste para a área de desenvolvedor Backend, à partir do briefing e requi
 
 # Sistema de Cartórios:
 ![Sistema de cartórios](https://user-images.githubusercontent.com/52874054/160034745-65779cb7-79a2-4d97-960c-d33cf0391800.png)
+
+### Obs.: fluxo e caso de usos criados via Creatly
