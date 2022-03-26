@@ -1,14 +1,18 @@
 package br.com.docket.registryoffice.controllers;
 
+import br.com.docket.registryoffice.exceptions.ApiCustomException;
 import br.com.docket.registryoffice.models.RegistryOffice;
 import br.com.docket.registryoffice.repository.RegistryOfficeRepository;
+import br.com.docket.registryoffice.services.RegistryOfficeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 @RestController
@@ -19,8 +23,14 @@ public class RegistryOfficeController {
     private RegistryOfficeRepository registryOfficeRepository;
 
     @PostMapping(path = "store")
-    public String store() {
-        return "Cartório cadastrado com sucesso!";
+    @ExceptionHandler(ApiCustomException.class)
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public RegistryOffice store(@RequestBody RegistryOffice registryOffice) throws ApiCustomException {
+
+        RegistryOfficeService.validateRegistryOffice(registryOffice);
+
+        return registryOfficeRepository.save(registryOffice);
     }
 
     @GetMapping(path = "index")
@@ -29,8 +39,18 @@ public class RegistryOfficeController {
     }
 
     @GetMapping(path = "show/{registryOfficeId}")
-    public String show(@PathVariable Integer registryOfficeId) {
-        return "Listando cartório " + registryOfficeId;
+    public Optional<RegistryOffice> show(
+            @PathVariable Long registryOfficeId,
+            HttpServletResponse response
+    ) throws ApiCustomException {
+
+        RegistryOffice registryOffice = registryOfficeRepository.findById(registryOfficeId).orElse(null);
+
+        if (registryOffice == null) {
+            response.setStatus(204);
+        }
+
+        return registryOfficeRepository.findById(registryOfficeId);
     }
 
     @PutMapping(path = "update/{registryOfficeId}")
