@@ -10,6 +10,6 @@ public class ApiCustomException extends Exception{
 
     @ExceptionHandler(ApiCustomException.class)
     public ApiCustomError handleMyCustomException(Exception ex) {
-        return new ApiCustomError("Oops! " + ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return new ApiCustomError("Oops! Ocorreu um erro: " + ex.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 }

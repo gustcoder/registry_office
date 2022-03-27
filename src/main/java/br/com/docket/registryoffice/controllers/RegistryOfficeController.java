@@ -9,12 +9,14 @@ import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
-@RestController
+//@RestController
+@Controller
 @RequestMapping(path = "registry-office")
 public class RegistryOfficeController {
 
@@ -49,7 +51,7 @@ public class RegistryOfficeController {
         return ResponseEntity.status(HttpStatus.OK).body(registryOffice);
     }
 
-    @PostMapping(path = "store")
+    @PostMapping(path = "store", consumes = {"application/json", "application/x-www-form-urlencoded"})
     @ExceptionHandler(ApiCustomException.class)
     @ResponseBody
     public ResponseEntity<Object> store(@RequestBody RegistryOffice registryOffice) {
@@ -147,5 +149,11 @@ public class RegistryOfficeController {
         JsonParser jsonParser = JsonParserFactory.getJsonParser();
 
         return jsonParser.parseList(response);
+    }
+
+    @GetMapping(path = "about")
+    public String about()
+    {
+        return "registry-office/about";
     }
 }
