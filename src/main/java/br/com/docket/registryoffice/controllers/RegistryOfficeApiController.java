@@ -5,29 +5,37 @@ import br.com.docket.registryoffice.models.RegistryOffice;
 import br.com.docket.registryoffice.repository.RegistryOfficeRepository;
 import br.com.docket.registryoffice.services.RegistryOfficeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JsonParser;
+import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
-@Controller
-@RequestMapping(path = "registry-office")
-public class RegistryOfficeController {
+@RestController
+@RequestMapping(path = "api/registry-office")
+public class RegistryOfficeApiController {
 
     @Autowired
     private RegistryOfficeRepository registryOfficeRepository;
 
     @GetMapping(path = "index")
-    public String index(Model model) {
+    public ResponseEntity<Object> index() {
 
         List<RegistryOffice> allRegistryOffices = registryOfficeRepository.findAll();
 
-        model.addAttribute("allRegistryOffices", allRegistryOffices);
+        if (allRegistryOffices.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NO_CONTENT)
+                    .body("Cartório não encontrado");
+        }
 
-        return "registry-office/index";
+        return ResponseEntity.status(HttpStatus.OK).body(allRegistryOffices);
     }
 
     @GetMapping(path = "show/{registryOfficeId}")
@@ -122,9 +130,25 @@ public class RegistryOfficeController {
         return ResponseEntity.status(HttpStatus.OK).body("Cartório " + registryOfficeId + " deletado com sucesso!");
     }
 
-    @GetMapping(path = "about")
-    public String about()
+    @GetMapping(path = "certificates-raw")
+    public ResponseEntity<String> getCertificatesRaw()
     {
-        return "registry-office/about";
+        RestTemplate restTemplate = new RestTemplate();
+        String certificateURL = "https://docketdesafiobackend.herokuapp.com/api/v1/certidoes";
+
+        return restTemplate.getForEntity(certificateURL, String.class);
+    }
+
+    @GetMapping(path = "certificates")
+    public List<Object> getCertificates()
+    {
+        RestTemplate restTemplate = new RestTemplate();
+        String certificateURL = "https://docketdesafiobackend.herokuapp.com/api/v1/certidoes";
+
+        String response = restTemplate.getForEntity(certificateURL, String.class).getBody();
+
+        JsonParser jsonParser = JsonParserFactory.getJsonParser();
+
+        return jsonParser.parseList(response);
     }
 }
