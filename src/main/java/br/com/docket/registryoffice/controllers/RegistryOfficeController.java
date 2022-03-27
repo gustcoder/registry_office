@@ -22,8 +22,17 @@ public class RegistryOfficeController {
     private RegistryOfficeRepository registryOfficeRepository;
 
     @GetMapping(path = "index")
-    public List<RegistryOffice> index() {
-        return registryOfficeRepository.findAll();
+    public ResponseEntity<Object> index() {
+
+        List<RegistryOffice> allRegistryOffices = registryOfficeRepository.findAll();
+
+        if (allRegistryOffices.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NO_CONTENT)
+                    .body("Cartório não encontrado");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(allRegistryOffices);
     }
 
     @GetMapping(path = "show/{registryOfficeId}")
@@ -37,7 +46,7 @@ public class RegistryOfficeController {
                     .body("Cartório não encontrado");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(registryOfficeRepository.findById(registryOfficeId));
+        return ResponseEntity.status(HttpStatus.OK).body(registryOffice);
     }
 
     @PostMapping(path = "store")
