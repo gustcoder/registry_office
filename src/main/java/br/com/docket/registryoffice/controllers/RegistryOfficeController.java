@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -44,28 +45,18 @@ public class RegistryOfficeController {
         return ResponseEntity.status(HttpStatus.OK).body(registryOffice);
     }
 
-    @PostMapping(path = "store", consumes = {"application/json", "application/x-www-form-urlencoded"})
-    @ExceptionHandler(ApiCustomException.class)
-    @ResponseBody
-    public ResponseEntity<Object> store(@RequestBody RegistryOffice registryOffice) {
+    @GetMapping(path = "new-registry-office")
+    public String newRegistryOffice(@ModelAttribute("registryOffice") RegistryOffice registryOffice)
+    {
+        return "/registry-office/store";
+    }
 
-        RegistryOfficeService registryOfficeService = new RegistryOfficeService(registryOfficeRepository);
+    @PostMapping(path = "store")
+    public String store(@ModelAttribute("registryOffice") RegistryOffice registryOffice) {
 
-        String validationMessage = registryOfficeService.validateRegistryOffice(registryOffice);
-        if (!validationMessage.isEmpty()) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_ACCEPTABLE)
-                    .body(validationMessage);
-        }
+        registryOfficeRepository.save(registryOffice);
 
-        String validationNameExists = registryOfficeService.checkIfRegistryOfficeNameAlreadyExists(registryOffice);
-        if (!validationNameExists.isEmpty()) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_ACCEPTABLE)
-                    .body(validationNameExists);
-        }
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(registryOfficeService.save(registryOffice));
+        return "redirect:index";
     }
 
     @PutMapping(path = "update/{registryOfficeId}")
@@ -108,18 +99,11 @@ public class RegistryOfficeController {
     }
 
     @DeleteMapping(path = "delete/{registryOfficeId}")
-    public ResponseEntity<Object> delete(@PathVariable Long registryOfficeId) {
-        RegistryOfficeService registryOfficeService = new RegistryOfficeService(registryOfficeRepository);
-
-        String validationExistsMessage = registryOfficeService.checkIfRegistryOfficeExistsById(registryOfficeId);
-        if (!validationExistsMessage.isEmpty()) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(validationExistsMessage);
-        }
+    public String delete(@PathVariable Long registryOfficeId) {
 
         registryOfficeRepository.deleteById(registryOfficeId);
-        return ResponseEntity.status(HttpStatus.OK).body("Cartório " + registryOfficeId + " deletado com sucesso!");
+
+        return "redirect:index";
     }
 
     @GetMapping(path = "about")
