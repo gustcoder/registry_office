@@ -67,7 +67,13 @@
                         <a href="">
                             <button class="btn btn-info" type="button">Editar</button>
                         </a>
-                        <button class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteRegistryOffice">
+                        <button th:id="${registryOffice.id}"
+                                class="btn btn-danger"
+                                type="submit"
+                                data-toggle="modal"
+                                data-target="#deleteRegistryOffice"
+                                onclick="document.getElementById()"
+                        >
                             Excluir
                         </button>
                     </td>
@@ -88,7 +94,9 @@
                             <p>Tem certeza que deseja excluir este registro?</p>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Confirmar</button>
+                            <form id="1" action="/registry-office/delete/ + this.id" th:method="delete">
+                                <button type="submit" class="btn btn-primary">Confirmar</button>
+                            </form>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>

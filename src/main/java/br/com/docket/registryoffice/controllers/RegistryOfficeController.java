@@ -56,7 +56,7 @@ public class RegistryOfficeController {
 
         registryOfficeRepository.save(registryOffice);
 
-        return "redirect:index";
+        return "redirect:/registry-office/index";
     }
 
     @PutMapping(path = "update/{registryOfficeId}")
@@ -103,7 +103,7 @@ public class RegistryOfficeController {
 
         registryOfficeRepository.deleteById(registryOfficeId);
 
-        return "redirect:index";
+        return "redirect:/registry-office/index";
     }
 
     @GetMapping(path = "about")
