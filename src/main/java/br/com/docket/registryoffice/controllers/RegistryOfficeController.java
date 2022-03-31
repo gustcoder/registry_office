@@ -59,43 +59,35 @@ public class RegistryOfficeController {
         return "redirect:/registry-office/index";
     }
 
+    @GetMapping(path = "edit/{registryOfficeId}")
+    public String edit(@PathVariable Long registryOfficeId, Model model) {
+
+        RegistryOffice registryOfficeToUpdate = registryOfficeRepository.findById(registryOfficeId).orElse(null);
+        model.addAttribute("registryOfficeToUpdate", registryOfficeToUpdate);
+
+        return "registry-office/update";
+    }
+
     @PutMapping(path = "update/{registryOfficeId}")
-    public ResponseEntity<Object> update(
+    public String update(
             @PathVariable Long registryOfficeId,
-            @RequestBody RegistryOffice registryOffice
+            @ModelAttribute("registryOfficeToUpdate") RegistryOffice registryOfficeToUpdate
     ) {
-
-        RegistryOfficeService registryOfficeService = new RegistryOfficeService(registryOfficeRepository);
-
-        String validationMessage = registryOfficeService.validateRegistryOffice(registryOffice);
-        if (!validationMessage.isEmpty()) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_ACCEPTABLE)
-                    .body(validationMessage);
-        }
-
-        String validationExistsMessage = registryOfficeService.checkIfRegistryOfficeExistsById(registryOfficeId);
-        if (!validationExistsMessage.isEmpty()) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(validationExistsMessage);
-        }
 
         Optional<RegistryOffice> updateRegistryOffice = registryOfficeRepository.findById(registryOfficeId);
 
         if (!updateRegistryOffice.isPresent()) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body("Cartório ID não encontrado");
+            return "Cartório ID não encontrado";
         }
 
         RegistryOffice registryOfficeData = updateRegistryOffice.get();
 
-        registryOfficeData.setName(registryOffice.getName());
-        registryOfficeData.setAddress(registryOffice.getAddress());
+        registryOfficeData.setName(registryOfficeToUpdate.getName());
+        registryOfficeData.setAddress(registryOfficeToUpdate.getAddress());
 
+        registryOfficeRepository.save(registryOfficeData);
 
-        return ResponseEntity.status(HttpStatus.OK).body(registryOfficeService.save(registryOfficeData));
+        return "redirect:/registry-office/index";
     }
 
     @DeleteMapping(path = "delete/{registryOfficeId}")
