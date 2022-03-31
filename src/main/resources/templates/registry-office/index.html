@@ -45,10 +45,20 @@
                 </div>
             </div>
         </nav>
+        <div id="loadingCertificates" class="float-right" style="display: none;">
+            <div class="spinner-grow text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <span>Carregando certidões...</span>
+        </div>
         <div style="margin-top: 10px;">
             <a href="/registry-office/new-registry-office">
-                <button class="btn btn-primary" type="button">Novo</button>
+                <button class="btn btn-success" type="button">Novo</button>
             </a>
+            <a href="/registry-office/update-certificates">
+                <button class="btn btn-secondary" type="button" onclick="loadingCertificates()">Atualizar Certidões</button>
+            </a>
+
             <table class="table table-hover">
                 <thead>
                 <tr>
@@ -65,7 +75,7 @@
                     <td th:text="${registryOffice.address}"></td>
                     <td>
                         <a th:href="@{/registry-office/edit/} + ${registryOffice.id}">
-                            <button class="btn btn-info" type="button">Editar</button>
+                            <button class="btn btn-primary" type="button">Editar</button>
                         </a>
                         <button th:id="${registryOffice.id}"
                                 class="btn btn-danger"
@@ -114,6 +124,10 @@
             let formAction = '/registry-office/delete/' + registryOfficeId;
 
             form.action = formAction;
+        }
+
+        function loadingCertificates() {
+            document.getElementById('loadingCertificates').style.display = "block";
         }
     </script>
 </body>

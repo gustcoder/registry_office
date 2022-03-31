@@ -103,4 +103,15 @@ public class RegistryOfficeController {
     {
         return "registry-office/about";
     }
+
+    @GetMapping(path = "update-certificates")
+    public String updateCertificates()
+    {
+        RegistryOfficeApiController api = new RegistryOfficeApiController();
+        List<Object> certificates = api.getCertificates();
+
+        // @todo salvar certidões em uma tabela para puxar nos cadastros
+
+        return "redirect:/registry-office/index";
+    }
 }
