@@ -1,15 +1,16 @@
 package br.com.docket.registryoffice.controllers;
 
-import br.com.docket.registryoffice.exceptions.ApiCustomException;
+import br.com.docket.registryoffice.models.Certificate;
 import br.com.docket.registryoffice.models.RegistryOffice;
+import br.com.docket.registryoffice.repository.CertificateRepository;
 import br.com.docket.registryoffice.repository.RegistryOfficeRepository;
+import br.com.docket.registryoffice.services.CertificateService;
 import br.com.docket.registryoffice.services.RegistryOfficeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -20,6 +21,9 @@ public class RegistryOfficeController {
 
     @Autowired
     private RegistryOfficeRepository registryOfficeRepository;
+
+    @Autowired
+    private CertificateRepository certificateRepository;
 
     @GetMapping(path = "index")
     public String index(Model model) {
@@ -111,6 +115,10 @@ public class RegistryOfficeController {
         List<Object> certificates = api.getCertificates();
 
         // @todo salvar certidões em uma tabela para puxar nos cadastros
+        if (!certificates.isEmpty()) {
+            CertificateService certificateService = new CertificateService(certificateRepository);
+            certificateService.saveCertificates(certificates);
+        }
 
         return "redirect:/registry-office/index";
     }
