@@ -25,10 +25,19 @@ public class RegistryOfficeController {
     private CertificateRepository certificateRepository;
 
     @GetMapping(path = "index")
-    public String index(Model model) {
+    public String index(
+            @RequestParam(name="registryOfficeName",required=false) String registryOfficeName,
+            Model model
+    ) {
 
-        List<RegistryOffice> allRegistryOffices = registryOfficeRepository.findAll();
-        model.addAttribute("allRegistryOffices", allRegistryOffices);
+        if (registryOfficeName == null) {
+            List<RegistryOffice> allRegistryOffices = registryOfficeRepository.findAll();
+            model.addAttribute("allRegistryOffices", allRegistryOffices);
+        } else {
+            RegistryOffice allRegistryOffices =
+                    registryOfficeRepository.findByNameContainingIgnoreCase(registryOfficeName).orElse(null);
+            model.addAttribute("allRegistryOffices", allRegistryOffices);
+        }
 
         List<Certificate> allCertificates = certificateRepository.findAll();
         model.addAttribute("allCertificates", allCertificates);
@@ -103,6 +112,7 @@ public class RegistryOfficeController {
 
         registryOfficeData.setName(registryOfficeToUpdate.getName());
         registryOfficeData.setAddress(registryOfficeToUpdate.getAddress());
+        registryOfficeData.setCertificates(registryOfficeToUpdate.getCertificates());
 
         registryOfficeRepository.save(registryOfficeData);
 

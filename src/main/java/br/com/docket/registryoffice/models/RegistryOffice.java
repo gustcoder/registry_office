@@ -1,6 +1,9 @@
 package br.com.docket.registryoffice.models;
 
+import br.com.docket.registryoffice.helpers.ListToStringConverter;
+
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -9,11 +12,16 @@ public class RegistryOffice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Basic(optional = false)
     @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
     private String address;
+
+    @Column
+    @Convert(converter = ListToStringConverter.class)
+    private List<String> certificates;
 
     public Long getId() {
         return id;
@@ -37,6 +45,14 @@ public class RegistryOffice {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public List<String> getCertificates() {
+        return certificates;
+    }
+
+    public void setCertificates(List<String> certificates) {
+        this.certificates = certificates;
     }
 
     @Override

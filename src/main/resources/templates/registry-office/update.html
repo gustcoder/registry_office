@@ -65,7 +65,13 @@
             <div class="form-group">
                 <label>Certidões</label>
                 <div th:each="certificate : ${allCertificates}" class="form-check">
-                    <input name="*{certificates[]}" class="form-check-input" type="checkbox" value="" th:id="${certificate.id}">
+                    <input
+                            th:field="*{certificates}"
+                            th:value="${certificate.id}"
+                            th:id="${certificate.id}"
+                            class="form-check-input"
+                            type="checkbox"
+                    >
                     <label th:text="${certificate.nome}" class="form-check-label" th:for="${certificate.id}"></label>
                 </div>
             </div>

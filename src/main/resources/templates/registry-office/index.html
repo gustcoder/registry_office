@@ -38,8 +38,16 @@
                             <a class="nav-link active" aria-current="page" href="/registry-office/about">Sobre</a>
                         </li>
                     </ul>
-                    <form class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="Pesquisar" aria-label="Pesquisar">
+                    <form th:action="@{/registry-office/index}" method="get" class="d-flex">
+                        <input
+                                type="text"
+                                name="registryOfficeName"
+                                class="form-control me-2"
+                                placeholder="Nome do cartório"
+                                aria-label="Nome do cartório"
+                                onfocus="this.placeholder = ''"
+                                onblur="this.placeholder = 'Nome do cartório'"
+                        >
                         <button class="btn btn-primary" type="submit">Pesquisar</button>
                     </form>
                 </div>

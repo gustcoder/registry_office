@@ -25,7 +25,7 @@ public class RegistryOfficeService {
     public String checkIfRegistryOfficeNameAlreadyExists(RegistryOffice registryOffice) {
 
         RegistryOffice registryNameOffice =
-                this.registryOfficeRepository.findByName(registryOffice.getName()).orElse(null);
+                this.registryOfficeRepository.findByNameContainingIgnoreCase(registryOffice.getName()).orElse(null);
 
         if (registryNameOffice != null) {
             return "Já existe um Cartório com o nome informado.";
