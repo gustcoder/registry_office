@@ -16,13 +16,18 @@ Neste teste para a área de desenvolvedor Backend, à partir do briefing e requi
 
 #### Obs.: fluxo e caso de usos criados via Creatly
 
-### Consumo da API Externa - Certidões
-#### Para criar um cenário onde houvesse o consumo da API no teste, introduzi um fluxo de atualização de certidões para reproduzir o caso de uso desenhado acima, onde é necessário que o sistema carregue primeiramente as certidões e salve no banco de dados local, para então poder utilizarmos nos cadatros de cartórios. 
+### Consumo da API da Docket - Certidões
+#### Para criar um cenário onde houvesse o consumo da API no teste, pensei em introduzir um fluxo de atualização de certidões para reproduzir o caso de uso desenhado acima. 
+#### Como a requisição por vezes variava o tempo despendido para obter a resposta, talvez não ficaria interessante consumir ela toda vez que fosse necessário cadastrar um novo cartório. Principalmente se a frequência de atualização desta lista não fosse tão grande.
+#### Com base nesta premissa, optei por desenvolver um mecanismo onde o sistema consultasse a API e persistisse as informações no banco de dados local, para então poder utilizarmos nos cadatros de cartórios.
+
+#### Uma vez tendo as informações localmente, ficaria mais performático para o cadastro.
 ![img.png](img.png)
 ![img_2.png](img_2.png)
 
 #### Ao atualizar as certidões, o sistema libera a opção para cadastrar um novo cartório.
 ![img_3.png](img_3.png)
+#### E a funcionalidade "**Atualizar Certidões**" fica sempre disponível para que as mesmas sejam atualizadas caso houver necessidade (poderia até ser programado de tempos em tempos para rodar este processo).
 
 ### Client API Rest
 #### O client interno ficou desenvolvido na classe "RegistryOfficeApiController", com o prefixo "api/" nas rotas. 
