@@ -5,7 +5,6 @@ import br.com.docket.registryoffice.models.RegistryOffice;
 import br.com.docket.registryoffice.repository.CertificateRepository;
 import br.com.docket.registryoffice.repository.RegistryOfficeRepository;
 import br.com.docket.registryoffice.services.CertificateService;
-import br.com.docket.registryoffice.services.RegistryOfficeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +28,15 @@ public class RegistryOfficeController {
     public String index(Model model) {
 
         List<RegistryOffice> allRegistryOffices = registryOfficeRepository.findAll();
-
         model.addAttribute("allRegistryOffices", allRegistryOffices);
+
+        List<Certificate> allCertificates = certificateRepository.findAll();
+        model.addAttribute("allCertificates", allCertificates);
+
+        model.addAttribute("certificatesUpdated", false);
+        if (!allCertificates.isEmpty()) {
+            model.addAttribute("certificatesUpdated", true);
+        }
 
         return "registry-office/index";
     }
@@ -50,8 +56,14 @@ public class RegistryOfficeController {
     }
 
     @GetMapping(path = "new-registry-office")
-    public String newRegistryOffice(@ModelAttribute("registryOffice") RegistryOffice registryOffice)
-    {
+    public String newRegistryOffice(
+            @ModelAttribute("registryOffice") RegistryOffice registryOffice,
+            Model model
+    ) {
+
+        List<Certificate> allCertificates = certificateRepository.findAll();
+        model.addAttribute("allCertificates", allCertificates);
+
         return "/registry-office/store";
     }
 
@@ -68,6 +80,9 @@ public class RegistryOfficeController {
 
         RegistryOffice registryOfficeToUpdate = registryOfficeRepository.findById(registryOfficeId).orElse(null);
         model.addAttribute("registryOfficeToUpdate", registryOfficeToUpdate);
+
+        List<Certificate> allCertificates = certificateRepository.findAll();
+        model.addAttribute("allCertificates", allCertificates);
 
         return "registry-office/update";
     }
@@ -109,12 +124,12 @@ public class RegistryOfficeController {
     }
 
     @GetMapping(path = "update-certificates")
-    public String updateCertificates()
+    public String updateCertificates(Model model)
     {
+        // consulta a API fornecida para obter certidões
         RegistryOfficeApiController api = new RegistryOfficeApiController();
         List<Object> certificates = api.getCertificates();
 
-        // @todo salvar certidões em uma tabela para puxar nos cadastros
         if (!certificates.isEmpty()) {
             CertificateService certificateService = new CertificateService(certificateRepository);
             certificateService.saveCertificates(certificates);

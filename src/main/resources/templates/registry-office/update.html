@@ -62,6 +62,14 @@
                 <input type="text" th:field="*{address}" class="form-control" id="address" th:value="${registryOfficeToUpdate.address}" placeholder="Endereço">
             </div>
             <br>
+            <div class="form-group">
+                <label>Certidões</label>
+                <div th:each="certificate : ${allCertificates}" class="form-check">
+                    <input name="*{certificates[]}" class="form-check-input" type="checkbox" value="" th:id="${certificate.id}">
+                    <label th:text="${certificate.nome}" class="form-check-label" th:for="${certificate.id}"></label>
+                </div>
+            </div>
+            <br>
             <div class="form-row">
                 <button th:id="${registryOfficeToUpdate.id}" type="button" class="btn btn-primary" onclick="updateRegistryOffice(this.id)">Salvar</button>
                 <a href="/registry-office/index">

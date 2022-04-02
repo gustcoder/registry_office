@@ -54,12 +54,20 @@
       <div class="form-row">
         <div class="form-group col-md-6">
           <label for="name">Nome</label>
-          <input type="text" th:field="*{name}" class="form-control" id="name" placeholder="Nome">
+          <input type="text" th:field="*{name}" class="form-control" id="name" placeholder="Nome" required>
         </div>
       </div>
       <div class="form-group">
         <label for="address">Endereço</label>
-        <input type="text" th:field="*{address}" class="form-control" id="address" placeholder="Endereço">
+        <input type="text" th:field="*{address}" class="form-control" id="address" placeholder="Endereço" required>
+      </div>
+      <br>
+      <div class="form-group">
+        <label>Certidões</label>
+        <div th:each="certificate : ${allCertificates}" class="form-check">
+          <input name="*{certificates[]}" class="form-check-input" type="checkbox" value="" th:id="${certificate.id}">
+          <label th:text="${certificate.nome}" class="form-check-label" th:for="${certificate.id}"></label>
+        </div>
       </div>
       <br>
       <div class="form-row">

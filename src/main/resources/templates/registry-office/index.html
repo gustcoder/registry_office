@@ -45,6 +45,14 @@
                 </div>
             </div>
         </nav>
+        <div
+            class="alert alert-warning alert-dismissible fade show"
+            role="alert"
+            th:style="${certificatesUpdated ? 'display:none' : 'display:block'}"
+        >
+            <strong>Atenção!</strong> Atualize as certidões para cadastrar um novo cartório.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
         <div id="loadingCertificates" class="float-right" style="display: none;">
             <div class="spinner-grow text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
@@ -52,11 +60,21 @@
             <span>Carregando certidões... Por favor aguarde...</span>
         </div>
         <div style="margin-top: 10px;">
-            <a href="/registry-office/new-registry-office">
+            <a
+                href="/registry-office/new-registry-office"
+                th:style="${certificatesUpdated ? '' : 'display:none'}"
+            >
                 <button class="btn btn-success" type="button">Novo</button>
             </a>
             <a href="/registry-office/update-certificates">
-                <button class="btn btn-secondary" type="button" onclick="loadingCertificates()">Atualizar Certidões</button>
+                <button
+                    class="btn btn-secondary"
+                    type="button"
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="Busca certidões na API Docket"
+                    onclick="loadingCertificates()"
+                >
+                    Atualizar Certidões
+                </button>
             </a>
 
             <table class="table table-hover">

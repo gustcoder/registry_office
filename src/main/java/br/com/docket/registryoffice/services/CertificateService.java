@@ -1,5 +1,6 @@
 package br.com.docket.registryoffice.services;
 
+import br.com.docket.registryoffice.models.Certificate;
 import br.com.docket.registryoffice.repository.CertificateRepository;
 
 import java.util.LinkedHashMap;
@@ -15,16 +16,22 @@ public class CertificateService {
 
     public void saveCertificates(List<Object> certificates)
     {
+        // percorre as certidões e salva as que forem novas (considerando o ID) no banco local
         for (Object certificate: certificates) {
             int certificateId = ((LinkedHashMap) certificate).get("id").hashCode();
+            String certificateNome = ((LinkedHashMap) certificate).get("nome").toString();
 
             boolean getCertificate = this.certificateRepository.existsById((long) certificateId);
 
             if (!getCertificate) {
-                // certificateRepository.save(certificate);
-            }
+                Certificate newCertificate = new Certificate();
 
-            System.out.println("Salvar certificado");
+                newCertificate.setId((long) certificateId);
+                newCertificate.setNome(certificateNome);
+
+                certificateRepository.save(newCertificate);
+                System.out.println("Certidão "+ certificateNome +" salva com sucesso!");
+            }
         }
     }
 }
