@@ -4,10 +4,10 @@ import br.com.docket.registryoffice.models.RegistryOffice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface RegistryOfficeRepository extends JpaRepository<RegistryOffice, Long> {
 
-    Optional<RegistryOffice> findByNameContainingIgnoreCase(String name);
+    List<RegistryOffice> findByNameContainingIgnoreCase(String name);
 }

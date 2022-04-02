@@ -27,17 +27,15 @@ public class RegistryOfficeController {
     @GetMapping(path = "index")
     public String index(
             @RequestParam(name="registryOfficeName",required=false) String registryOfficeName,
+            @RequestParam(name="certificatesError",required=false) Boolean certificatesError,
             Model model
     ) {
 
-        if (registryOfficeName == null) {
-            List<RegistryOffice> allRegistryOffices = registryOfficeRepository.findAll();
-            model.addAttribute("allRegistryOffices", allRegistryOffices);
-        } else {
-            RegistryOffice allRegistryOffices =
-                    registryOfficeRepository.findByNameContainingIgnoreCase(registryOfficeName).orElse(null);
-            model.addAttribute("allRegistryOffices", allRegistryOffices);
-        }
+        List<RegistryOffice> allRegistryOffices = registryOfficeName == null
+                ? registryOfficeRepository.findAll()
+                : registryOfficeRepository.findByNameContainingIgnoreCase(registryOfficeName);
+
+        model.addAttribute("allRegistryOffices", allRegistryOffices);
 
         List<Certificate> allCertificates = certificateRepository.findAll();
         model.addAttribute("allCertificates", allCertificates);
@@ -45,6 +43,11 @@ public class RegistryOfficeController {
         model.addAttribute("certificatesUpdated", false);
         if (!allCertificates.isEmpty()) {
             model.addAttribute("certificatesUpdated", true);
+        }
+
+        model.addAttribute("certificatesError", false);
+        if (certificatesError != null) {
+            model.addAttribute("certificatesError", true);
         }
 
         return "registry-office/index";
@@ -134,17 +137,24 @@ public class RegistryOfficeController {
     }
 
     @GetMapping(path = "update-certificates")
-    public String updateCertificates(Model model)
+    public String updateCertificates(Model model) throws Exception
     {
-        // consulta a API fornecida para obter certidões
-        RegistryOfficeApiController api = new RegistryOfficeApiController();
-        List<Object> certificates = api.getCertificates();
+        try {
+            // consulta a API fornecida para obter certidões
+            RegistryOfficeApiController api = new RegistryOfficeApiController();
+            List<Object> certificates = api.getCertificates();
 
-        if (!certificates.isEmpty()) {
-            CertificateService certificateService = new CertificateService(certificateRepository);
-            certificateService.saveCertificates(certificates);
+            if (!certificates.isEmpty()) {
+                CertificateService certificateService = new CertificateService(certificateRepository);
+                certificateService.saveCertificates(certificates);
+            }
+
+
+            return "redirect:/registry-office/index";
+        } catch(Exception e) {
+            System.out.println("Erro ao se comunicar com a API de certidões: " + e.getMessage());
+
+            return "redirect:/registry-office/index?certificatesError=true";
         }
-
-        return "redirect:/registry-office/index";
     }
 }

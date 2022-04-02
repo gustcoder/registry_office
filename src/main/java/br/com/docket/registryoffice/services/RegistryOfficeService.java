@@ -4,6 +4,8 @@ import br.com.docket.registryoffice.models.RegistryOffice;
 import br.com.docket.registryoffice.repository.RegistryOfficeRepository;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 
 @RestController
 public class RegistryOfficeService {
@@ -24,8 +26,8 @@ public class RegistryOfficeService {
 
     public String checkIfRegistryOfficeNameAlreadyExists(RegistryOffice registryOffice) {
 
-        RegistryOffice registryNameOffice =
-                this.registryOfficeRepository.findByNameContainingIgnoreCase(registryOffice.getName()).orElse(null);
+        List<RegistryOffice> registryNameOffice =
+                this.registryOfficeRepository.findByNameContainingIgnoreCase(registryOffice.getName());
 
         if (registryNameOffice != null) {
             return "Já existe um Cartório com o nome informado.";

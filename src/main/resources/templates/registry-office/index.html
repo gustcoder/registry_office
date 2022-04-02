@@ -20,6 +20,14 @@
         <strong>Atenção!</strong> Atualize as certidões para cadastrar um novo cartório.
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+    <div
+            class="alert alert-danger alert-dismissible fade show"
+            role="alert"
+            th:style="${certificatesError ? 'display:block' : 'display:none'}"
+    >
+        <strong>Erro!</strong> Falha ao se comunicar com a API de certidões. Por favor tente novamente mais tarde.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
     <div id="loadingCertificates" class="float-right" style="display: none;">
         <div class="spinner-grow text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
