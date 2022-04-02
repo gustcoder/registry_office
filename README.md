@@ -6,6 +6,7 @@ Neste teste para a área de desenvolvedor Backend, à partir do briefing e requi
 - Java 8 (ou superior) ✔️
 - Spring Boot ✔️
 - Thymeleaf HTML ✔️
+- Bootstrap ✔️
 - Banco de dados H2DB ✔️
 
 ### Fluxo Cartório:
@@ -37,6 +38,6 @@ Neste teste para a área de desenvolvedor Backend, à partir do briefing e requi
 ## Considerações Finais
 - Tenho consciência de que é possível melhorar muita coisa referente a template engine, mas por ser o primeiro contato foi bastante interessante explorar o Thymeleaf!
 - O mesmo vale para o Java em si (igualmente o Spring Boot). Encontrei algumas similaridades com o PHP/Laravel, mas no geral foi bem legal e um grande aprendizado!
-- Pretendo, quando tiver um pouco mais de tempo, adicionar testes unitários no projeto para ver como funcionam no Spring Boot.
+- Pretendo posteriormente adicionar testes unitários no projeto para ver como funcionam no Spring Boot.
 - O tempo médio usado para desenvolver o teste foi de aproximadamente 16h ~ 18h.
 - Agradeço muito pela oportunidade!
