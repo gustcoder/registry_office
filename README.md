@@ -6,6 +6,7 @@ Neste teste para a área de desenvolvedor Backend, à partir do briefing e requi
 - Java 8 (ou superior) ✔️
 - Spring Boot ✔️
 - Thymeleaf HTML ✔️
+- Bootstrap ✔️
 - Banco de dados H2DB ✔️
 
 ### Fluxo Cartório:
